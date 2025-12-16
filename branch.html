@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>لوحة تحكم الفرع - A.E.A Time Control</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <!-- رأس الصفحة -->
+    <header class="header">
+        <div class="container">
+            <div class="header-content">
+                <div class="logo-section">
+                    <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTIAb1JbNhDOvBg9Zd6iJvejPF1i0fqHFKIjw&s" alt="AEA Logo" class="logo">
+                    <div>
+                        <h1>A.E.A Time Control</h1>
+                        <p class="branch-name" id="branchName"></p>
+                    </div>
+                </div>
+                <button class="logout-btn" onclick="logout()">
+                    <i class="fas fa-sign-out-alt"></i> تسجيل الخروج
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- القائمة الجانبية -->
+    <nav class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <h3>القائمة الرئيسية</h3>
+            <button class="close-sidebar" onclick="toggleSidebar()">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <ul class="sidebar-menu">
+            <li><a href="#" onclick="showSection('dashboard')" class="active">
+                <i class="fas fa-home"></i> الرئيسية
+            </a></li>
+            <li><a href="#" onclick="showSection('trainers')">
+                <i class="fas fa-users"></i> إدارة المدربين
+            </a></li>
+            <li><a href="#" onclick="showSection('daily-hours')">
+                <i class="fas fa-clock"></i> تسجيل الساعات
+            </a></li>
+            <li><a href="#" onclick="showSection('additional-items')">
+                <i class="fas fa-plus-circle"></i> البنود الإضافية
+            </a></li>
+            <li><a href="#" onclick="showSection('reports')">
+                <i class="fas fa-chart-bar"></i> التقارير
+            </a></li>
+        </ul>
+    </nav>
+
+    <!-- المحتوى الرئيسي -->
+    <main class="main-content">
+        <button class="menu-toggle" onclick="toggleSidebar()">
+            <i class="fas fa-bars"></i>
+        </button>
+
+        <!-- قسم الرئيسية -->
+        <section id="dashboard" class="content-section active">
+            <h2 class="section-title">لوحة المعلومات</h2>
+            
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-icon" style="background: #667eea;">
+                        <i class="fas fa-users"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3 id="totalTrainers">0</h3>
+                        <p>إجمالي المدربين</p>
+                    </div>
+                </div>
+                
+                <div class="stat-card">
+                    <div class="stat-icon" style="background: #28a745;">
+                        <i class="fas fa-user-check"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3 id="activeTrainers">0</h3>
+                        <p>المدربين النشطين</p>
+                    </div>
+                </div>
+                
+                <div class="stat-card">
+                    <div class="stat-icon" style="background: #ffc107;">
+                        <i class="fas fa-clock"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3 id="monthlyHours">0</h3>
+                        <p>ساعات الشهر الحالي</p>
+                    </div>
+                </div>
+                
+                <div class="stat-card">
+                    <div class="stat-icon" style="background: #dc3545;">
+                        <i class="fas fa-plus-circle"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3 id="additionalItems">0</h3>
+                        <p>البنود الإضافية</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- قسم إدارة المدربين -->
+        <section id="trainers" class="content-section">
+            <h2 class="section-title">إدارة المدربين</h2>
+            
+            <button class="btn btn-primary" onclick="showAddTrainerModal()">
+                <i class="fas fa-plus"></i> إضافة مدرب جديد
+            </button>
+            
+            <div class="table-container">
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>الاسم</th>
+                            <th>رقم الهاتف</th>
+                            <th>عدد الجروبات</th>
+                            <th>إجمالي التعاقد</th>
+                            <th>سعر الجروب</th>
+                            <th>Rate 24 ساعة</th>
+                            <th>Rate 16 ساعة</th>
+                            <th>الحالة</th>
+                            <th>الإجراءات</th>
+                        </tr>
+                    </thead>
+                    <tbody id="trainersTable"></tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- قسم تسجيل الساعات -->
+        <section id="daily-hours" class="content-section">
+            <h2 class="section-title">تسجيل الساعات اليومية</h2>
+            
+            <div class="alert alert-info">
+                <i class="fas fa-info-circle"></i>
+                <strong>تنبيه:</strong> يمكنك تسجيل الساعات لليوم الحالي فقط (<span id="currentDate"></span>)
+            </div>
+            
+            <div class="form-card">
+                <form id="dailyHoursForm">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>اختر المدرب</label>
+                            <select id="trainerSelectHours" required>
+                                <option value="">-- اختر المدرب --</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>ساعات باكدج 24</label>
+                            <input type="number" id="hours24" min="0" step="0.5" value="0" placeholder="عدد الساعات">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>ساعات باكدج 16</label>
+                            <input type="number" id="hours16" min="0" step="0.5" value="0" placeholder="عدد الساعات">
+                        </div>
+                    </div>
+                    
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-save"></i> حفظ الساعات
+                    </button>
+                </form>
+            </div>
+            
+            <h3 class="section-subtitle">سجل اليوم</h3>
+            <div class="table-container">
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>المدرب</th>
+                            <th>باكدج 24 ساعة</th>
+                            <th>باكدج 16 ساعة</th>
+                            <th>إجمالي الساعات</th>
+                            <th>الإجراءات</th>
+                        </tr>
+                    </thead>
+                    <tbody id="todayHoursTable"></tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- قسم البنود الإضافية -->
+        <section id="additional-items" class="content-section">
+            <h2 class="section-title">البنود الإضافية</h2>
+            
+            <div class="alert alert-warning">
+                <i class="fas fa-exclamation-triangle"></i>
+                <strong>ملاحظة:</strong> البنود الإضافية لا تُضاف إلى المرتب - هي فقط ساعات إضافية مرصودة
+            </div>
+            
+            <div class="form-card">
+                <form id="additionalItemsForm">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>اختر المدرب</label>
+                            <select id="trainerSelectItems" required>
+                                <option value="">-- اختر المدرب --</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>نوع البند</label>
+                            <select id="itemType" required>
+                                <option value="">-- اختر البند --</option>
+                                <option value="Placement Test">Placement Test</option>
+                                <option value="Activities">Activities</option>
+                                <option value="Covering Session">Covering Session</option>
+                                <option value="Compensation Session">Compensation Session</option>
+                                <option value="Coaching for Kids">Coaching for Kids</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>المدة (دقائق)</label>
+                            <input type="number" id="itemDuration" min="0" step="15" required placeholder="المدة بالدقائق">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>نوع الباكدج</label>
+                            <select id="itemPackageType" required>
+                                <option value="">-- اختر نوع الباكدج --</option>
+                                <option value="24">باكدج 24 ساعة</option>
+                                <option value="16">باكدج 16 ساعة</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-plus"></i> إضافة البند
+                    </button>
+                </form>
+            </div>
+            
+            <h3 class="section-subtitle">البنود المسجلة اليوم</h3>
+            <div class="table-container">
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>المدرب</th>
+                            <th>نوع البند</th>
+                            <th>المدة</th>
+                            <th>الباكدج</th>
+                            <th>المبلغ</th>
+                            <th>الإجراءات</th>
+                        </tr>
+                    </thead>
+                    <tbody id="todayItemsTable"></tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- قسم التقارير -->
+        <section id="reports" class="content-section">
+            <h2 class="section-title">التقارير الشهرية</h2>
+            
+            <div class="form-card">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>اختر الشهر</label>
+                        <input type="month" id="reportMonth" class="form-control">
+                    </div>
+                    
+                    <div class="form-group">
+                        <button class="btn btn-success" onclick="generateReport()">
+                            <i class="fas fa-chart-line"></i> عرض التقرير
+                        </button>
+                        <button class="btn btn-primary" onclick="exportToExcel()">
+                            <i class="fas fa-file-excel"></i> تصدير Excel
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <div id="reportContent"></div>
+        </section>
+    </main>
+
+    <!-- Modal إضافة مدرب -->
+    <div class="modal" id="addTrainerModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>إضافة مدرب جديد</h3>
+                <button class="close-modal" onclick="closeAddTrainerModal()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <form id="addTrainerForm">
+                <div class="form-group">
+                    <label>الاسم</label>
+                    <input type="text" id="trainerName" required placeholder="اسم المدرب">
+                </div>
+                
+                <div class="form-group">
+                    <label>رقم الهاتف</label>
+                    <input type="tel" id="trainerPhone" required placeholder="رقم الهاتف">
+                </div>
+                
+                <div class="form-group">
+                    <label>عدد الجروبات</label>
+                    <input type="number" id="numGroups" min="1" required placeholder="عدد الجروبات">
+                </div>
+                
+                <div class="form-group">
+                    <label>إجمالي التعاقد (جنيه)</label>
+                    <input type="number" id="totalContract" min="0" required placeholder="المبلغ الإجمالي">
+                </div>
+                
+                <div class="form-group">
+                    <label>الحالة</label>
+                    <select id="trainerStatus" required>
+                        <option value="نشط">نشط</option>
+                        <option value="متوقف">متوقف</option>
+                    </select>
+                </div>
+                
+                <button type="submit" class="btn btn-primary">
+                    <i class="fas fa-save"></i> حفظ المدرب
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <script src="js/branch.js"></script>
+</body>
+</html>

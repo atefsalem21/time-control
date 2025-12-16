@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>A.E.A Time Control - نظام إدارة الساعات</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Cairo', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        
+        .login-container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            overflow: hidden;
+            max-width: 500px;
+            width: 100%;
+            animation: fadeIn 0.5s ease;
+        }
+        
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .login-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 40px 30px;
+            text-align: center;
+            color: white;
+        }
+        
+        .logo-container {
+            margin-bottom: 20px;
+        }
+        
+        .logo-container img {
+            max-width: 120px;
+            height: auto;
+            border-radius: 10px;
+            background: white;
+            padding: 10px;
+        }
+        
+        .login-header h1 {
+            font-size: 28px;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+        
+        .login-header p {
+            font-size: 16px;
+            opacity: 0.9;
+        }
+        
+        .login-body {
+            padding: 40px 30px;
+        }
+        
+        .form-group {
+            margin-bottom: 25px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #333;
+            font-weight: 600;
+            font-size: 15px;
+        }
+        
+        .form-group select,
+        .form-group input {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 16px;
+            font-family: 'Cairo', sans-serif;
+            transition: all 0.3s ease;
+        }
+        
+        .form-group select:focus,
+        .form-group input:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+        
+        .form-group input[type="password"] {
+            letter-spacing: 3px;
+        }
+        
+        .login-btn {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            font-family: 'Cairo', sans-serif;
+        }
+        
+        .login-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+        }
+        
+        .login-btn:active {
+            transform: translateY(0);
+        }
+        
+        .error-message {
+            background: #fee;
+            color: #c33;
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            display: none;
+            text-align: center;
+            border: 1px solid #fcc;
+        }
+        
+        .error-message.show {
+            display: block;
+            animation: shake 0.5s ease;
+        }
+        
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-10px); }
+            75% { transform: translateX(10px); }
+        }
+        
+        .footer {
+            background: #f5f5f5;
+            padding: 20px;
+            text-align: center;
+            color: #666;
+            font-size: 14px;
+        }
+        
+        .footer strong {
+            color: #667eea;
+        }
+        
+        @media (max-width: 600px) {
+            .login-header h1 {
+                font-size: 24px;
+            }
+            
+            .login-body {
+                padding: 30px 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <div class="login-header">
+            <div class="logo-container">
+                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTIAb1JbNhDOvBg9Zd6iJvejPF1i0fqHFKIjw&s" alt="American Egyptian Academy Logo">
+            </div>
+            <h1>A.E.A Time Control</h1>
+            <p>نظام إدارة ساعات عمل المدربين</p>
+        </div>
+        
+        <div class="login-body">
+            <div class="error-message" id="errorMessage"></div>
+            
+            <form id="loginForm">
+                <div class="form-group">
+                    <label for="branchSelect">
+                        <i class="fas fa-building"></i> اختر الفرع
+                    </label>
+                    <select id="branchSelect" required>
+                        <option value="">-- اختر الفرع --</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="loginId">
+                        <i class="fas fa-key"></i> رقم الدخول السري
+                    </label>
+                    <input type="password" id="loginId" placeholder="أدخل الرقم السري" required>
+                </div>
+                
+                <button type="submit" class="login-btn">
+                    <i class="fas fa-sign-in-alt"></i> تسجيل الدخول
+                </button>
+            </form>
+        </div>
+        
+        <div class="footer">
+            Developed By: <strong>Atef Salem</strong>
+        </div>
+    </div>
+
+    <script>
+        // تحميل قائمة الفروع
+        async function loadBranches() {
+            try {
+                const response = await fetch('tables/branches?limit=100');
+                const data = await response.json();
+                
+                const branchSelect = document.getElementById('branchSelect');
+                
+                // ترتيب الفروع حسب login_id
+                const sortedBranches = data.data.sort((a, b) => a.login_id - b.login_id);
+                
+                sortedBranches.forEach(branch => {
+                    const option = document.createElement('option');
+                    option.value = branch.id;
+                    option.textContent = branch.branch_name;
+                    option.dataset.loginId = branch.login_id;
+                    branchSelect.appendChild(option);
+                });
+                
+                // إضافة خيار الإدارة في النهاية
+                const adminOption = document.createElement('option');
+                adminOption.value = 'admin';
+                adminOption.textContent = '🔐 لوحة الإدارة';
+                adminOption.dataset.loginId = '140321';
+                branchSelect.appendChild(adminOption);
+                
+            } catch (error) {
+                console.error('خطأ في تحميل الفروع:', error);
+                showError('حدث خطأ في تحميل قائمة الفروع');
+            }
+        }
+        
+        // معالجة تسجيل الدخول
+        document.getElementById('loginForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const branchSelect = document.getElementById('branchSelect');
+            const loginId = document.getElementById('loginId').value;
+            const selectedOption = branchSelect.options[branchSelect.selectedIndex];
+            const expectedLoginId = selectedOption.dataset.loginId;
+            const branchId = branchSelect.value;
+            
+            if (!branchId) {
+                showError('الرجاء اختيار الفرع أولاً');
+                return;
+            }
+            
+            // التحقق من رقم الدخول
+            if (loginId !== expectedLoginId) {
+                showError('رقم الدخول غير صحيح');
+                return;
+            }
+            
+            // حفظ معلومات الدخول
+            if (branchId === 'admin') {
+                sessionStorage.setItem('userType', 'admin');
+                sessionStorage.setItem('branchName', 'الإدارة');
+                window.location.href = 'admin.html';
+            } else {
+                sessionStorage.setItem('userType', 'branch');
+                sessionStorage.setItem('branchId', branchId);
+                sessionStorage.setItem('branchName', selectedOption.textContent);
+                window.location.href = 'branch.html';
+            }
+        });
+        
+        function showError(message) {
+            const errorDiv = document.getElementById('errorMessage');
+            errorDiv.textContent = message;
+            errorDiv.classList.add('show');
+            
+            setTimeout(() => {
+                errorDiv.classList.remove('show');
+            }, 3000);
+        }
+        
+        // تحميل الفروع عند تحميل الصفحة
+        loadBranches();
+    </script>
+</body>
+</html>
